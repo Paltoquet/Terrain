@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{5441987c-dcf0-42a0-ac36-eb064d69b658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\ShaderSource">
+      <UniqueIdentifier>{d602b721-42a4-4616-825d-e7f430f80e64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\ShaderCode">
+      <UniqueIdentifier>{2862e609-6d81-4e79-9e0c-36224e729ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls">
+      <UniqueIdentifier>{45302f8f-a41c-47cd-bf9b-be50b3e9837c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{e5b934ce-8aca-494a-a028-715e2c1de59f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{0b635ba5-c9a5-4616-9968-b39e937cccd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{d1b21cef-ebd5-4e20-bfe9-4a3a24e64257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Drawable">
+      <UniqueIdentifier>{2c6697a5-69ad-4823-8d27-af112481ec81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Profilling">
+      <UniqueIdentifier>{febfa403-845d-4559-b64b-7b98ab1bdc31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systemclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\ShaderManager.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\Lightshader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\TextureShader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\Shader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\ClipPlaneShader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="D3dClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Controls\Input.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\World.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Position.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Texture.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\FontShader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UserInterface.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Font.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Text.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\ColorShader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
+    <ClInclude Include="Land.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Profilling\FpsCounter.h">
+      <Filter>Profilling</Filter>
+    </ClInclude>
+    <ClInclude Include="Profilling\Timer.h">
+      <Filter>Profilling</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Systemclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\ShaderManager.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\Lightshader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\TextureShader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\Shader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\ClipPlaneShader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="D3dClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls\Input.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\World.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Position.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Texture.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UserInterface.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\FontShader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Font.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Text.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\ColorShader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Land.cpp">
+      <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Profilling\FpsCounter.cpp">
+      <Filter>Profilling</Filter>
+    </ClCompile>
+    <ClCompile Include="Profilling\Timer.cpp">
+      <Filter>Profilling</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Terrain.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Terrain.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderSource\clipplane.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\clipplane.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\light.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\light.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\texture.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\texture.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\font.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\font.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\color.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\color.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
