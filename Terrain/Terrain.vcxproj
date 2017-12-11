@@ -153,10 +153,10 @@
     <ClInclude Include="Camera\Position.h" />
     <ClInclude Include="Controls\Input.h" />
     <ClInclude Include="D3dClass.h" />
-    <ClInclude Include="Land.h" />
     <ClInclude Include="Profilling\FpsCounter.h" />
     <ClInclude Include="Profilling\Timer.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scene\Drawable\Land.h" />
     <ClInclude Include="Scene\World.h" />
     <ClInclude Include="ShaderCode\ClipPlaneShader.h" />
     <ClInclude Include="ShaderCode\ColorShader.h" />

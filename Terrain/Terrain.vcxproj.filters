@@ -111,14 +111,14 @@
     <ClInclude Include="ShaderCode\ColorShader.h">
       <Filter>Shaders\ShaderCode</Filter>
     </ClInclude>
-    <ClInclude Include="Land.h">
-      <Filter>Scene\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="Profilling\FpsCounter.h">
       <Filter>Profilling</Filter>
     </ClInclude>
     <ClInclude Include="Profilling\Timer.h">
       <Filter>Profilling</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Drawable\Land.h">
+      <Filter>Scene\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,9 @@ public:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 
+	void EnableWireframe();
+	void DisableWireframe();
+
 private:
 	bool m_vsync_enabled;
 	int m_videoCardMemory;
@@ -52,6 +55,7 @@ private:
 	ID3D11DepthStencilState* m_depthStencilState;
 	ID3D11DepthStencilView* m_depthStencilView;
 	ID3D11RasterizerState* m_rasterState;
+	ID3D11RasterizerState* m_rasterStateWireframe;
 	ID3D11DepthStencilState* m_depthDisabledStencilState;
 	XMMATRIX m_projectionMatrix;
 	XMMATRIX m_worldMatrix;

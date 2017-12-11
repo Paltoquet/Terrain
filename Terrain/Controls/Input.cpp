@@ -290,7 +290,7 @@ bool Input::IsDownwardPressed()
 bool Input::IsUpwardPressed()
 {
 	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_PGDN] & 0x80)
+	if (m_keyboardState[DIK_UP] & 0x80)
 	{
 		return true;
 	}

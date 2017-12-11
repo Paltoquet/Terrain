@@ -1,17 +1,14 @@
 #pragma once
 
 #include "d3dclass.h"
+
 #include <Controls/Input.h>
 #include <ShaderCode/ShaderManager.h>
-#include <UI\UserInterface.h>
+#include <UI/UserInterface.h>
 #include <Camera/Camera.h>
 #include <Camera/Position.h>
-#include <Scene\Drawable\Land.h>
+#include <Scene/Drawable\Land.h>
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: World
-////////////////////////////////////////////////////////////////////////////////
 class World
 {
 public:
@@ -32,5 +29,5 @@ private:
 	Camera* m_Camera;
 	Position* m_Position;
 	Land* m_Terrain;
-	bool m_displayUI;
+	bool m_displayUI, m_wireFrame;
 };
