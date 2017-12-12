@@ -7,7 +7,7 @@
 using namespace DirectX;
 using namespace std;
 
-#include <UI\Texture.h>
+#include <ImageProcessing\Texture.h>
 
 class Font
 {

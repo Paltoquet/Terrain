@@ -40,6 +40,12 @@
     <Filter Include="Profilling">
       <UniqueIdentifier>{febfa403-845d-4559-b64b-7b98ab1bdc31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImageProcessing">
+      <UniqueIdentifier>{0e1c96d2-09c6-421d-970c-30db047ccf25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{81790eef-01ec-40bf-93de-e1cc74aa6c05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,9 +99,6 @@
     <ClInclude Include="Camera\Position.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Texture.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderCode\FontShader.h">
       <Filter>Shaders\ShaderCode</Filter>
     </ClInclude>
@@ -119,6 +122,15 @@
     </ClInclude>
     <ClInclude Include="Scene\Drawable\Land.h">
       <Filter>Scene\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcessing\TextureManager.h">
+      <Filter>ImageProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcessing\Texture.h">
+      <Filter>ImageProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StringHelper.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +176,6 @@
     <ClCompile Include="Camera\Position.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Texture.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\UserInterface.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -190,6 +199,15 @@
     </ClCompile>
     <ClCompile Include="Profilling\Timer.cpp">
       <Filter>Profilling</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessing\TextureManager.cpp">
+      <Filter>ImageProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessing\Texture.cpp">
+      <Filter>ImageProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StringHelper.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

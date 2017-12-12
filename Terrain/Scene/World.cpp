@@ -77,12 +77,12 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scree
 	// Set the UI to display by default.
 	m_displayUI = true;
 	// Set wire frame rendering initially to enabled.
-	m_wireFrame = true;
+	m_wireFrame = false;
 
 	return true;
 }
 
-bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager, float frameTime, int fps)
+bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager, TextureManager* TextureManager, float frameTime, int fps)
 {
 	bool result;
 	float posX, posY, posZ, rotX, rotY, rotZ;
@@ -103,7 +103,7 @@ bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager
 	}
 
 	// Render the graphics.
-	result = Render(Direct3D, ShaderManager);
+	result = Render(Direct3D, ShaderManager, TextureManager);
 	if (!result)
 	{
 		return false;
@@ -168,7 +168,7 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 	return;
 }
 
-bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager)
+bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureManager* TextureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
@@ -195,8 +195,13 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager)
 
 	// Render the terrain grid using the color shader.
 	m_Terrain->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix);
+
+	/*result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix);*/
+
+	result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix, TextureManager->GetTexture(1));
+
 	if (!result)
 	{
 		return false;

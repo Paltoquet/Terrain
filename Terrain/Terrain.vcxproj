@@ -153,6 +153,8 @@
     <ClInclude Include="Camera\Position.h" />
     <ClInclude Include="Controls\Input.h" />
     <ClInclude Include="D3dClass.h" />
+    <ClInclude Include="ImageProcessing\Texture.h" />
+    <ClInclude Include="ImageProcessing\TextureManager.h" />
     <ClInclude Include="Profilling\FpsCounter.h" />
     <ClInclude Include="Profilling\Timer.h" />
     <ClInclude Include="Resource.h" />
@@ -171,8 +173,8 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="UI\Font.h" />
     <ClInclude Include="UI\Text.h" />
-    <ClInclude Include="UI\Texture.h" />
     <ClInclude Include="UI\UserInterface.h" />
+    <ClInclude Include="Utils\StringHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -180,6 +182,8 @@
     <ClCompile Include="Camera\Position.cpp" />
     <ClCompile Include="Controls\Input.cpp" />
     <ClCompile Include="D3dClass.cpp" />
+    <ClCompile Include="ImageProcessing\Texture.cpp" />
+    <ClCompile Include="ImageProcessing\TextureManager.cpp" />
     <ClCompile Include="Land.cpp" />
     <ClCompile Include="Profilling\FpsCounter.cpp" />
     <ClCompile Include="Profilling\Timer.cpp" />
@@ -201,8 +205,8 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="UI\Font.cpp" />
     <ClCompile Include="UI\Text.cpp" />
-    <ClCompile Include="UI\Texture.cpp" />
     <ClCompile Include="UI\UserInterface.cpp" />
+    <ClCompile Include="Utils\StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terrain.rc" />

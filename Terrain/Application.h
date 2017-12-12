@@ -3,9 +3,10 @@
 #include <d3dclass.h>
 #include <Controls/Input.h>
 #include <ShaderCode/ShaderManager.h>
+#include <ImageProcessing/TextureManager.h>
 #include <Scene/World.h>
-#include <Profilling\FpsCounter.h>
-#include <Profilling\Timer.h>
+#include <Profilling/FpsCounter.h>
+#include <Profilling/Timer.h>
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -27,6 +28,7 @@ private:
 	Input* m_Input;
 	D3DClass* m_Direct3D;
 	ShaderManager* m_ShaderManager;
+	TextureManager* m_TextureManager;
 	FpsCounter* m_Fps;
 	Timer* m_Timer;
 	World* m_World;

@@ -297,36 +297,48 @@ bool Land::BuildTerrainModel()
 			m_terrainModel[index].x = m_heightMap[index1].x;
 			m_terrainModel[index].y = m_heightMap[index1].y;
 			m_terrainModel[index].z = m_heightMap[index1].z;
+			m_terrainModel[index].tu = 0.0f;
+			m_terrainModel[index].tv = 0.0f;
 			index++;
 
 			// Triangle 1 - Upper right.
 			m_terrainModel[index].x = m_heightMap[index2].x;
 			m_terrainModel[index].y = m_heightMap[index2].y;
 			m_terrainModel[index].z = m_heightMap[index2].z;
+			m_terrainModel[index].tu = 1.0f;
+			m_terrainModel[index].tv = 0.0f;
 			index++;
 
 			// Triangle 1 - Bottom left.
 			m_terrainModel[index].x = m_heightMap[index3].x;
 			m_terrainModel[index].y = m_heightMap[index3].y;
 			m_terrainModel[index].z = m_heightMap[index3].z;
+			m_terrainModel[index].tu = 0.0f;
+			m_terrainModel[index].tv = 1.0f;
 			index++;
 
 			// Triangle 2 - Bottom left.
 			m_terrainModel[index].x = m_heightMap[index3].x;
 			m_terrainModel[index].y = m_heightMap[index3].y;
 			m_terrainModel[index].z = m_heightMap[index3].z;
+			m_terrainModel[index].tu = 0.0f;
+			m_terrainModel[index].tv = 1.0f;
 			index++;
 
 			// Triangle 2 - Upper right.
 			m_terrainModel[index].x = m_heightMap[index2].x;
 			m_terrainModel[index].y = m_heightMap[index2].y;
 			m_terrainModel[index].z = m_heightMap[index2].z;
+			m_terrainModel[index].tu = 1.0f;
+			m_terrainModel[index].tv = 0.0f;
 			index++;
 
 			// Triangle 2 - Bottom right.
 			m_terrainModel[index].x = m_heightMap[index4].x;
 			m_terrainModel[index].y = m_heightMap[index4].y;
 			m_terrainModel[index].z = m_heightMap[index4].z;
+			m_terrainModel[index].tu = 1.0f;
+			m_terrainModel[index].tv = 1.0f;
 			index++;
 		}
 	}
@@ -349,9 +361,8 @@ bool Land::InitializeBuffers(ID3D11Device* device)
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
-	int i, j, terrainWidth, terrainHeight, index;
+	int i, terrainWidth, terrainHeight;
 	XMFLOAT4 color;
-	float positionX, positionZ;
 
 	// Set the color of the terrain grid.
 	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -380,7 +391,7 @@ bool Land::InitializeBuffers(ID3D11Device* device)
 	for (i = 0; i<m_vertexCount; i++)
 	{
 		vertices[i].position = XMFLOAT3(m_terrainModel[i].x, m_terrainModel[i].y, m_terrainModel[i].z);
-		vertices[i].color = color;
+		vertices[i].texture = XMFLOAT2(m_terrainModel[i].tu, m_terrainModel[i].tv);
 		indices[i] = i;
 	}
 

@@ -4,10 +4,11 @@
 
 #include <Controls/Input.h>
 #include <ShaderCode/ShaderManager.h>
+#include <ImageProcessing/TextureManager.h>
 #include <UI/UserInterface.h>
 #include <Camera/Camera.h>
 #include <Camera/Position.h>
-#include <Scene/Drawable\Land.h>
+#include <Scene/Drawable/Land.h>
 
 class World
 {
@@ -18,11 +19,11 @@ public:
 
 	bool Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
-	bool Frame(D3DClass*, Input*, ShaderManager*, float, int);
+	bool Frame(D3DClass*, Input*, ShaderManager*, TextureManager*, float, int);
 
 private:
 	void HandleMovementInput(Input*, float);
-	bool Render(D3DClass*, ShaderManager*);
+	bool Render(D3DClass*, ShaderManager*, TextureManager*);
 
 private:
 	UserInterface* m_UserInterface;
