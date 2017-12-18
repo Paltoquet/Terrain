@@ -4,8 +4,10 @@
 
 ShaderManager::ShaderManager()
 {
+	m_ColorShader = 0;
 	m_TextureShader = 0;
 	m_LightShader = 0;
+	m_LandShader = 0;
 	m_ClipPlaneShader = 0;
 	m_FontShader = 0;
 }
@@ -61,6 +63,20 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the land shader object.
+	m_LandShader = new LandShader;
+	if (!m_LandShader)
+	{
+		return false;
+	}
+
+	// Initialize the land shader object.
+	result = m_LandShader->Initialize(device, hwnd);
+	if (!result)
+	{
 		return false;
 	}
 
@@ -147,6 +163,15 @@ bool ShaderManager::RenderLightShader(ID3D11DeviceContext* deviceContext, int in
 	return true;
 }
 
+
+bool ShaderManager::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
+	XMFLOAT4 diffuseColor)
+{
+	return m_LandShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
+}
+
+
 bool ShaderManager::RenderClipPlaneShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
 	const XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT4 plane)
 {
@@ -197,6 +222,14 @@ void ShaderManager::Shutdown()
 		m_LightShader->Shutdown();
 		delete m_LightShader;
 		m_LightShader = 0;
+	}
+
+	// Release the terrain shader object.
+	if (m_LandShader)
+	{
+		m_LandShader->Shutdown();
+		delete m_LandShader;
+		m_LandShader = 0;
 	}
 
 	// Release the texture shader object.

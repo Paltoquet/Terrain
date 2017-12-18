@@ -159,10 +159,12 @@
     <ClInclude Include="Profilling\Timer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene\Drawable\Land.h" />
+    <ClInclude Include="Scene\Light.h" />
     <ClInclude Include="Scene\World.h" />
     <ClInclude Include="ShaderCode\ClipPlaneShader.h" />
     <ClInclude Include="ShaderCode\ColorShader.h" />
     <ClInclude Include="ShaderCode\FontShader.h" />
+    <ClInclude Include="ShaderCode\LandShader.h" />
     <ClInclude Include="ShaderCode\Lightshader.h" />
     <ClInclude Include="ShaderCode\Shader.h" />
     <ClInclude Include="ShaderCode\ShaderManager.h" />
@@ -187,10 +189,12 @@
     <ClCompile Include="Land.cpp" />
     <ClCompile Include="Profilling\FpsCounter.cpp" />
     <ClCompile Include="Profilling\Timer.cpp" />
+    <ClCompile Include="Scene\Light.cpp" />
     <ClCompile Include="Scene\World.cpp" />
     <ClCompile Include="ShaderCode\ClipPlaneShader.cpp" />
     <ClCompile Include="ShaderCode\ColorShader.cpp" />
     <ClCompile Include="ShaderCode\FontShader.cpp" />
+    <ClCompile Include="ShaderCode\LandShader.cpp" />
     <ClCompile Include="ShaderCode\Lightshader.cpp" />
     <ClCompile Include="ShaderCode\Shader.cpp" />
     <ClCompile Include="ShaderCode\ShaderManager.cpp" />
@@ -225,6 +229,8 @@
     <None Include="ShaderSource\font.vs" />
     <None Include="ShaderSource\light.ps" />
     <None Include="ShaderSource\light.vs" />
+    <None Include="ShaderSource\terrain.ps" />
+    <None Include="ShaderSource\terrain.vs" />
     <None Include="ShaderSource\texture.ps" />
     <None Include="ShaderSource\texture.vs" />
   </ItemGroup>

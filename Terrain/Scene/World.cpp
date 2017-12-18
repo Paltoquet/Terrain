@@ -8,6 +8,7 @@ World::World()
 	m_Camera = 0;
 	m_Position = 0;
 	m_Terrain = 0;
+	m_Light = 0;
 }
 
 
@@ -73,6 +74,20 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scree
 		MessageBox(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
 		return false;
 	}
+
+	// Create the light object.
+	m_Light = new Light();
+	if (!m_Light)
+	{
+		return false;
+	}
+
+	// Initialize the light object.
+	//m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetDiffuseColor(0.8f, 0.8f, 0.8f, 1.0f);
+	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetAmbientColor(0.1f, 0.1f, 0.1f, 1.0f);
+	m_Light->SetDirection(-0.5f, -1.0f, -0.5f);
 
 	// Set the UI to display by default.
 	m_displayUI = true;
@@ -171,6 +186,7 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureManager* TextureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
+	XMFLOAT3 position;
 	bool result;
 
 
@@ -199,8 +215,17 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	/*result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
 		projectionMatrix);*/
 
-	result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, TextureManager->GetTexture(1));
+	/*result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix, TextureManager->GetTexture(1));*/
+
+	/*result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix, TextureManager->GetTexture(1), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), 0.0f);*/
+
+	result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix, TextureManager->GetTexture(1), m_Light->GetDirection(),
+		m_Light->GetDiffuseColor());
+
 
 	if (!result)
 	{
@@ -237,6 +262,13 @@ void World::Shutdown()
 		m_Terrain->Shutdown();
 		delete m_Terrain;
 		m_Terrain = 0;
+	}
+
+	// Release the light object.
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = 0;
 	}
 
 	// Release the position object.
