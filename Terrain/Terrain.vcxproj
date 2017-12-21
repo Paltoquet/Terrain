@@ -159,6 +159,7 @@
     <ClInclude Include="Profilling\Timer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene\Drawable\Land.h" />
+    <ClInclude Include="Scene\Drawable\SkyDome.h" />
     <ClInclude Include="Scene\Light.h" />
     <ClInclude Include="Scene\World.h" />
     <ClInclude Include="ShaderCode\ClipPlaneShader.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="ShaderCode\Lightshader.h" />
     <ClInclude Include="ShaderCode\Shader.h" />
     <ClInclude Include="ShaderCode\ShaderManager.h" />
+    <ClInclude Include="ShaderCode\SkyDomeShader.h" />
     <ClInclude Include="ShaderCode\TextureShader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Systemclass.h" />
@@ -189,6 +191,7 @@
     <ClCompile Include="Land.cpp" />
     <ClCompile Include="Profilling\FpsCounter.cpp" />
     <ClCompile Include="Profilling\Timer.cpp" />
+    <ClCompile Include="Scene\Drawable\SkyDome.cpp" />
     <ClCompile Include="Scene\Light.cpp" />
     <ClCompile Include="Scene\World.cpp" />
     <ClCompile Include="ShaderCode\ClipPlaneShader.cpp" />
@@ -198,6 +201,7 @@
     <ClCompile Include="ShaderCode\Lightshader.cpp" />
     <ClCompile Include="ShaderCode\Shader.cpp" />
     <ClCompile Include="ShaderCode\ShaderManager.cpp" />
+    <ClCompile Include="ShaderCode\SkyDomeShader.cpp" />
     <ClCompile Include="ShaderCode\TextureShader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -229,6 +233,8 @@
     <None Include="ShaderSource\font.vs" />
     <None Include="ShaderSource\light.ps" />
     <None Include="ShaderSource\light.vs" />
+    <None Include="ShaderSource\skydome.ps" />
+    <None Include="ShaderSource\skydome.vs" />
     <None Include="ShaderSource\terrain.ps" />
     <None Include="ShaderSource\terrain.vs" />
     <None Include="ShaderSource\texture.ps" />

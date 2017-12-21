@@ -9,6 +9,7 @@
 #include <Camera/Camera.h>
 #include <Camera/Position.h>
 #include <Scene/Drawable/Land.h>
+#include <Scene/Drawable/Skydome.h>
 #include <Scene/Light.h>
 
 class World
@@ -31,6 +32,7 @@ private:
 	Camera* m_Camera;
 	Position* m_Position;
 	Land* m_Terrain;
+	SkyDome* m_SkyDome;
 	Light* m_Light;
 	bool m_displayUI, m_wireFrame;
 };

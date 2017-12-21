@@ -1,5 +1,5 @@
-Terrain Filename: Ressources/sauv_height.bmp
-Terrain Height: 257
-Terrain Width: 257
-Terrain Scaling: 4.0
-Color Map Filename: Ressources/sauv_color.bmp
+Terrain Filename: Ressources/sauv_height_512.r16
+Terrain Height: 513
+Terrain Width: 513
+Terrain Scaling: 400.0
+Color Map Filename: Ressources/sauv_color_512.bmp

@@ -17,7 +17,16 @@ private:
 		XMFLOAT3 position;
 		XMFLOAT2 texture;
 		XMFLOAT3 normal;
+		XMFLOAT3 tangent;
+		XMFLOAT3 binormal;
 		XMFLOAT3 color;
+	};
+
+	struct TempVertexType
+	{
+		XMFLOAT3 pos;
+		XMFLOAT2 uv;
+		XMFLOAT3 normal;
 	};
 
 	struct HeightMapType
@@ -32,6 +41,8 @@ private:
 		float x, y, z;
 		float tu, tv;
 		float nx, ny, nz;
+		float tx, ty, tz;
+		float bx, by, bz;
 		float r, g, b;
 	};
 
@@ -57,9 +68,13 @@ private:
 
 	bool LoadSetupFile(char*);
 	bool LoadBitmapHeightMap();
+	bool LoadRawHeightMap();
 	bool LoadColorMap();
 	void ShutdownHeightMap();
 	void SetTerrainCoordinates();
+
+	void CalculateTerrainVectors();
+	void CalculateTangentBinormal(TempVertexType, TempVertexType, TempVertexType, XMFLOAT3&, XMFLOAT3&);
 	bool CalculateNormals();
 	bool BuildTerrainModel();
 

@@ -138,6 +138,12 @@
     <ClInclude Include="ShaderCode\LandShader.h">
       <Filter>Shaders\ShaderCode</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Drawable\SkyDome.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCode\SkyDomeShader.h">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -221,6 +227,12 @@
     <ClCompile Include="ShaderCode\LandShader.cpp">
       <Filter>Shaders\ShaderCode</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Drawable\SkyDome.cpp">
+      <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCode\SkyDomeShader.cpp">
+      <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terrain.rc">
@@ -271,6 +283,12 @@
       <Filter>Shaders\ShaderSource</Filter>
     </None>
     <None Include="ShaderSource\terrain.ps">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\skydome.vs">
+      <Filter>Shaders\ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\skydome.ps">
       <Filter>Shaders\ShaderSource</Filter>
     </None>
   </ItemGroup>

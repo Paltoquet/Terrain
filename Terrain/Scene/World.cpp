@@ -8,6 +8,7 @@ World::World()
 	m_Camera = 0;
 	m_Position = 0;
 	m_Terrain = 0;
+	m_SkyDome = 0;
 	m_Light = 0;
 }
 
@@ -72,6 +73,21 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scree
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the sky dome object.
+	m_SkyDome = new SkyDome();
+	if (!m_SkyDome)
+	{
+		return false;
+	}
+
+	// Initialize the sky dome object.
+	result = m_SkyDome->Initialize(Direct3D->GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the sky dome object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -186,6 +202,7 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureManager* TextureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
+	XMMATRIX translation;
 	XMFLOAT3 position;
 	bool result;
 
@@ -200,6 +217,8 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	m_Camera->GetBaseViewMatrix(baseViewMatrix);
 	Direct3D->GetOrthoMatrix(orthoMatrix);
 
+	position = m_Camera->GetPosition();
+
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -208,6 +227,25 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	{
 		Direct3D->EnableWireframe();
 	}
+
+	// Turn off back face culling and turn off the Z buffer.
+	Direct3D->TurnOffCulling();
+	Direct3D->TurnZBufferOff();
+
+	translation = XMMatrixTranslation(position.x, position.y, position.z);
+
+	// Render the sky dome using the sky dome shader.
+	m_SkyDome->Render(Direct3D->GetDeviceContext());
+	result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), translation * worldMatrix, viewMatrix,
+		projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Turn the Z buffer back and back face culling on.
+	Direct3D->TurnZBufferOn();
+	Direct3D->TurnOnCulling();
 
 	// Render the terrain grid using the color shader.
 	m_Terrain->Render(Direct3D->GetDeviceContext());
@@ -223,8 +261,8 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), 0.0f);*/
 
 	result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, TextureManager->GetTexture(1), m_Light->GetDirection(),
-		m_Light->GetDiffuseColor());
+		projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+		m_Light->GetDirection(), m_Light->GetDiffuseColor());
 
 
 	if (!result)
@@ -262,6 +300,14 @@ void World::Shutdown()
 		m_Terrain->Shutdown();
 		delete m_Terrain;
 		m_Terrain = 0;
+	}
+
+	// Release the sky dome object.
+	if (m_SkyDome)
+	{
+		m_SkyDome->Shutdown();
+		delete m_SkyDome;
+		m_SkyDome = 0;
 	}
 
 	// Release the light object.

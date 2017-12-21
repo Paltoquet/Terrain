@@ -85,13 +85,13 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 	}
 
 	// Load textures into the texture manager.
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "Ressources/Texture/test.tga", 0);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "Ressources/Texture/dirt01d.tga", 0);
 	if (!result)
 	{
 		return false;
 	}
 
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "Ressources/Texture/dirt01d.tga", 1);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "Ressources/Texture/dirt01n.tga", 1);
 	if (!result)
 	{
 		return false;

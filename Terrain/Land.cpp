@@ -27,8 +27,17 @@ bool Land::Initialize(ID3D11Device* device, char* configFile)
 		return false;
 	}
 
+	/*
 	// Initialize the terrain height map with the data from the bitmap file.
 	result = LoadBitmapHeightMap();
+	if (!result)
+	{
+		return false;
+	}
+	*/	
+
+	// Initialize the terrain height map with the data from the raw file.
+	result = LoadRawHeightMap();
 	if (!result)
 	{
 		return false;
@@ -60,6 +69,9 @@ bool Land::Initialize(ID3D11Device* device, char* configFile)
 
 	// We can now release the height map since it is no longer needed in memory once the 3D terrain model has been built.
 	ShutdownHeightMap();
+
+	// Calculate the tangent and binormal for the terrain model.
+	CalculateTerrainVectors();
 
 	// Load the rendering buffers with the terrain data.
 	result = InitializeBuffers(device);
@@ -260,6 +272,76 @@ bool Land::LoadBitmapHeightMap()
 	bitmapImage = 0;
 
 	// Release the terrain filename now that is has been read in.
+	delete[] m_terrainFilename;
+	m_terrainFilename = 0;
+
+	return true;
+}
+
+
+bool Land::LoadRawHeightMap()
+{
+	int error, i, j, index;
+	FILE* filePtr;
+	unsigned long long imageSize, count;
+	unsigned short* rawImage;
+
+
+	// Create the float array to hold the height map data.
+	m_heightMap = new HeightMapType[m_terrainWidth * m_terrainHeight];
+	if (!m_heightMap)
+	{
+		return false;
+	}
+
+	// Open the 16 bit raw height map file for reading in binary.
+	error = fopen_s(&filePtr, m_terrainFilename, "rb");
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// Calculate the size of the raw image data.
+	imageSize = m_terrainHeight * m_terrainWidth;
+
+	// Allocate memory for the raw image data.
+	rawImage = new unsigned short[imageSize];
+	if (!rawImage)
+	{
+		return false;
+	}
+
+	// Read in the raw image data.
+	count = fread(rawImage, sizeof(unsigned short), imageSize, filePtr);
+	if (count != imageSize)
+	{
+		return false;
+	}
+
+	// Close the file.
+	error = fclose(filePtr);
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// Copy the image data into the height map array.
+	for (j = 0; j<m_terrainHeight; j++)
+	{
+		for (i = 0; i<m_terrainWidth; i++)
+		{
+			index = (m_terrainWidth * j) + i;
+
+			// Store the height at this point in the height map array.
+			m_heightMap[index].y = (float)rawImage[index];
+		}
+	}
+
+	// Release the bitmap image data.
+	delete[] rawImage;
+	rawImage = 0;
+
+	// Release the terrain filename now that it has been read in.
 	delete[] m_terrainFilename;
 	m_terrainFilename = 0;
 
@@ -500,6 +582,129 @@ bool Land::LoadColorMap()
 	return true;
 }
 
+void Land::CalculateTerrainVectors()
+{
+	int faceCount, i, index;
+	TempVertexType vertex1, vertex2, vertex3;
+	XMFLOAT3 tangent, binormal;
+
+
+	// Calculate the number of faces in the terrain model.
+	faceCount = m_vertexCount / 3;
+
+	// Initialize the index to the model data.
+	index = 0;
+
+	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
+	for (i = 0; i<faceCount; i++)
+	{
+		// Get the three vertices for this face from the terrain model.
+		vertex1.pos		= XMFLOAT3(m_terrainModel[index].x, m_terrainModel[index].y, m_terrainModel[index].z);
+		vertex1.uv		= XMFLOAT2(m_terrainModel[index].tu, m_terrainModel[index].tv);
+		vertex1.normal	= XMFLOAT3(m_terrainModel[index].nx, m_terrainModel[index].ny, m_terrainModel[index].nz);
+		index++;
+
+		vertex2.pos		= XMFLOAT3(m_terrainModel[index].x, m_terrainModel[index].y, m_terrainModel[index].z);
+		vertex2.uv		= XMFLOAT2(m_terrainModel[index].tu, m_terrainModel[index].tv);
+		vertex2.normal	= XMFLOAT3(m_terrainModel[index].nx, m_terrainModel[index].ny, m_terrainModel[index].nz);
+		index++;
+
+		vertex3.pos		= XMFLOAT3(m_terrainModel[index].x, m_terrainModel[index].y, m_terrainModel[index].z);
+		vertex3.uv		= XMFLOAT2(m_terrainModel[index].tu, m_terrainModel[index].tv);
+		vertex3.normal	= XMFLOAT3(m_terrainModel[index].nx, m_terrainModel[index].ny, m_terrainModel[index].nz);
+		index++;
+
+		// Calculate the tangent and binormal of that face.
+		CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
+
+		// Store the tangent and binormal for this face back in the model structure.
+		m_terrainModel[index - 1].tx = tangent.x;
+		m_terrainModel[index - 1].ty = tangent.y;
+		m_terrainModel[index - 1].tz = tangent.z;
+		m_terrainModel[index - 1].bx = binormal.x;
+		m_terrainModel[index - 1].by = binormal.y;
+		m_terrainModel[index - 1].bz = binormal.z;
+
+		m_terrainModel[index - 2].tx = tangent.x;
+		m_terrainModel[index - 2].ty = tangent.y;
+		m_terrainModel[index - 2].tz = tangent.z;
+		m_terrainModel[index - 2].bx = binormal.x;
+		m_terrainModel[index - 2].by = binormal.y;
+		m_terrainModel[index - 2].bz = binormal.z;
+
+		m_terrainModel[index - 3].tx = tangent.x;
+		m_terrainModel[index - 3].ty = tangent.y;
+		m_terrainModel[index - 3].tz = tangent.z;
+		m_terrainModel[index - 3].bx = binormal.x;
+		m_terrainModel[index - 3].by = binormal.y;
+		m_terrainModel[index - 3].bz = binormal.z;
+	}
+
+	return;
+}
+
+void Land::CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, XMFLOAT3& tangent, XMFLOAT3& binormal)
+{
+	XMFLOAT3 vector1, vector2;
+	XMFLOAT2 tuVector, tvVector;
+	XMVECTOR tmp1, tmp2, tmp3;
+	float den;
+	float length;
+
+
+	tmp1 = XMLoadFloat3(&vertex1.pos);
+	tmp2 = XMLoadFloat3(&vertex2.pos);
+	tmp3 = XMLoadFloat3(&vertex3.pos);
+
+	// Calculate the two vectors for this face.
+	tmp2 = XMVectorSubtract(tmp2, tmp1);
+	tmp3 = XMVectorSubtract(tmp3, tmp1);
+
+	XMStoreFloat3(&vector1, tmp2);
+	XMStoreFloat3(&vector2, tmp3);
+
+	// Calculate the tu and tv texture space vectors.
+	tmp1 = XMLoadFloat2(&vertex1.uv);
+	tmp2 = XMLoadFloat2(&vertex2.uv);
+	tmp3 = XMLoadFloat2(&vertex3.uv);
+
+	tmp2 = XMVectorSubtract(tmp2, tmp1);
+	tmp3 = XMVectorSubtract(tmp3, tmp1);
+
+	XMStoreFloat2(&tuVector, tmp2);
+	XMStoreFloat2(&tvVector, tmp3);
+
+
+	// Calculate the denominator of the tangent/binormal equation.
+	den = 1.0f / (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
+
+	tmp1 = XMLoadFloat3(&vector1);
+	tmp1 = XMVectorScale(tmp1, tvVector.y);
+
+	tmp2 = XMLoadFloat3(&vector2);
+	tmp2 = XMVectorScale(tmp2, tvVector.x);
+
+	tmp3 = XMVectorSubtract(tmp1, tmp2);
+	tmp3 = XMVectorScale(tmp3, den);
+
+	tmp3 = XMVector3Normalize(tmp3);
+	XMStoreFloat3(&tangent, tmp3);
+
+	tmp1 = XMLoadFloat3(&vector1);
+	tmp1 = XMVectorScale(tmp1, tuVector.y);
+
+	tmp2 = XMLoadFloat3(&vector2);
+	tmp2 = XMVectorScale(tmp2, tuVector.x);
+
+	tmp3 = XMVectorSubtract(tmp1, tmp2);
+	tmp3 = XMVectorScale(tmp3, den);
+
+	tmp3 = XMVector3Normalize(tmp3);
+	XMStoreFloat3(&binormal, tmp3);
+
+	return;
+}
+
 bool Land::BuildTerrainModel()
 {
 	int i, j, index, index1, index2, index3, index4;
@@ -667,6 +872,8 @@ bool Land::InitializeBuffers(ID3D11Device* device)
 		vertices[i].position = XMFLOAT3(m_terrainModel[i].x, m_terrainModel[i].y, m_terrainModel[i].z);
 		vertices[i].texture = XMFLOAT2(m_terrainModel[i].tu, m_terrainModel[i].tv);
 		vertices[i].normal = XMFLOAT3(m_terrainModel[i].nx, m_terrainModel[i].ny, m_terrainModel[i].nz);
+		vertices[i].tangent = XMFLOAT3(m_terrainModel[i].tx, m_terrainModel[i].ty, m_terrainModel[i].tz);
+		vertices[i].binormal = XMFLOAT3(m_terrainModel[i].bx, m_terrainModel[i].by, m_terrainModel[i].bz);
 		vertices[i].color = XMFLOAT3(m_terrainModel[i].r, m_terrainModel[i].g, m_terrainModel[i].b);
 		indices[i] = i;
 	}

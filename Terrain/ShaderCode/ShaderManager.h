@@ -7,6 +7,7 @@
 #include "LandShader.h"
 #include "FontShader.h"
 #include "ColorShader.h"
+#include "SkyDomeShader.h"
 
 class ShaderManager
 {
@@ -25,11 +26,14 @@ public:
 	bool RenderLightShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4 ambient,
 		XMFLOAT4 diffuse, XMFLOAT3 cameraPosition, XMFLOAT4 specularColor, float specularPower);
 	
-	bool RenderTerrainShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
+	bool RenderTerrainShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*,
+		XMFLOAT3, XMFLOAT4);
 
 	bool RenderClipPlaneShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, XMFLOAT4 plane);
 
 	bool RenderFontShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, XMFLOAT4 color);
+
+	bool RenderSkyDomeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT4, XMFLOAT4);
 
 private:
 	ColorShader* m_ColorShader;
@@ -38,6 +42,7 @@ private:
 	LandShader* m_LandShader;
 	ClipPlaneShader* m_ClipPlaneShader;
 	FontShader* m_FontShader;
+	SkyDomeShader* m_SkyDomeShader;
 
 };
 
