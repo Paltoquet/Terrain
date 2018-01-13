@@ -378,7 +378,6 @@ void Land::SetTerrainCoordinates()
 bool Land::CalculateNormals()
 {
 	int i, j, index1, index2, index3, index;
-	float length;
 	XMFLOAT3 v1, v2, v3, sum;
 	XMVECTOR vect1, vect2, vect3, r1, r2;
 	XMFLOAT3* normals;
@@ -840,7 +839,7 @@ bool Land::InitializeBuffers(ID3D11Device* device)
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
-	int i, terrainWidth, terrainHeight;
+	int i;
 	XMFLOAT4 color;
 
 	// Set the color of the terrain grid.

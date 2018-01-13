@@ -35,6 +35,7 @@ public:
 	bool IsF2Toggled();
 
 	void GetMouseLocation(int&, int&);
+	void GetCurrentMouseMovement(int &, int &);
 
 private:
 	bool ReadKeyboard();
@@ -51,6 +52,7 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	int m_currentX, m_currentY;
 
 	bool m_F1_released;
 	bool m_F2_released;

@@ -144,6 +144,12 @@
     <ClInclude Include="ShaderCode\SkyDomeShader.h">
       <Filter>Shaders\ShaderCode</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Drawable\IModel.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Drawable\Mesh.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -232,6 +238,12 @@
     </ClCompile>
     <ClCompile Include="ShaderCode\SkyDomeShader.cpp">
       <Filter>Shaders\ShaderCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Drawable\IModel.cpp">
+      <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Drawable\Mesh.cpp">
+      <Filter>Scene\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

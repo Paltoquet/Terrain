@@ -30,9 +30,7 @@ bool Timer::Initialize()
 
 void Timer::Frame()
 {
-	INT64 currentTime;
-	float timeDifference;
-	double elapsed;
+	float elapsed;
 
 	QueryPerformanceCounter(&m_CurrentTime);
 	elapsed = (float)(m_CurrentTime.QuadPart - m_StartTime.QuadPart) / m_TickPerMs;

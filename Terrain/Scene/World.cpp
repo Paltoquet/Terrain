@@ -6,6 +6,7 @@ World::World()
 {
 	m_UserInterface = 0;
 	m_Camera = 0;
+	m_Test = 0;
 	m_Position = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
@@ -18,7 +19,7 @@ World::World(const World& other)
 }
 
 
-bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int screenHeight, float screenDepth)
+bool World::Initialize(D3DClass* Direct3D, HWND hwnd, ShaderManager* ShaderManager, int screenWidth, int screenHeight, float screenDepth)
 {
 	bool result;
 
@@ -58,7 +59,8 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scree
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 10.0f, -10.0f);
+	//m_Position->SetPosition(128.0f, 10.0f, -10.0f);
+	m_Position->SetPosition(0.0f, 0.0f,-10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
 	// Create the terrain object.
@@ -75,6 +77,14 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scree
 		MessageBox(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	m_Test = new Mesh();
+	if (!m_Test)
+	{
+		return false;
+	}
+	result = m_Test->Initialize(hwnd, Direct3D->GetDevice(), ShaderManager->m_EffectFactory, L"Ressources/model/bunny2.sdkmesh");
 
 	// Create the sky dome object.
 	m_SkyDome = new SkyDome();
@@ -146,6 +156,7 @@ bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager
 void World::HandleMovementInput(Input* Input, float frameTime)
 {
 	bool keyDown;
+	int mouseX, mouseY;
 	float posX, posY, posZ, rotX, rotY, rotZ;
 
 	// Set the frame time for calculating the updated position.
@@ -176,6 +187,9 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 	keyDown = Input->IsDownwardPressed();
 	m_Position->LookDownward(keyDown);
 
+
+	Input->GetCurrentMouseMovement(mouseX, mouseY);
+	m_Position->SetMouseMove(mouseX, mouseY);
 	// Get the view point position/rotation.
 	m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
@@ -202,9 +216,14 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureManager* TextureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
-	XMMATRIX translation;
+	XMMATRIX translation, translation2, scale;
 	XMFLOAT3 position;
 	bool result;
+
+	std::function<void()> renderModel = [&]() {
+		ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Test->GetIndexCount(), scale * translation2 * worldMatrix, viewMatrix,
+			projectionMatrix);
+	};
 
 
 	// Generate the view matrix based on the camera's position.
@@ -233,6 +252,8 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	Direct3D->TurnZBufferOff();
 
 	translation = XMMatrixTranslation(position.x, position.y, position.z);
+	translation2 = XMMatrixTranslation(150, 50, 200);
+	scale = XMMatrixScaling(700, 700, 700);
 
 	// Render the sky dome using the sky dome shader.
 	m_SkyDome->Render(Direct3D->GetDeviceContext());
@@ -264,11 +285,16 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 		projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
 		m_Light->GetDirection(), m_Light->GetDiffuseColor());
 
+	m_Test->Render(Direct3D->GetDeviceContext(), renderModel);
+
+	/*result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Test->GetIndexCount(), scale * translation2 * worldMatrix, viewMatrix,
+		projectionMatrix);*/
 
 	if (!result)
 	{
 		return false;
 	}
+	
 
 	// Turn off wire frame rendering of the terrain if it was on.
 	if (m_wireFrame)

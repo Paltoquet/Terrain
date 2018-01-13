@@ -32,6 +32,9 @@ bool Input::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int scre
 	m_mouseX = 0;
 	m_mouseY = 0;
 
+	m_currentX = 0;
+	m_currentY = 0;
+
 	// Initialize the main direct input interface.
 	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
 	if (FAILED(result))
@@ -103,7 +106,6 @@ bool Input::Frame()
 {
 	bool result;
 
-
 	// Read the current state of the keyboard.
 	result = ReadKeyboard();
 	if (!result)
@@ -170,6 +172,9 @@ bool Input::ReadMouse()
 
 void Input::ProcessInput()
 {
+	m_currentX = m_mouseState.lX;
+	m_currentY = m_mouseState.lY;
+
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
 	m_mouseX += m_mouseState.lX;
 	m_mouseY += m_mouseState.lY;
@@ -202,6 +207,12 @@ void Input::GetMouseLocation(int& mouseX, int& mouseY)
 	return;
 }
 
+void Input::GetCurrentMouseMovement(int& mouseX, int& mouseY)
+{
+	mouseX = m_currentX;
+	mouseY = m_currentY;
+	return;
+}
 
 bool Input::IsLeftPressed()
 {

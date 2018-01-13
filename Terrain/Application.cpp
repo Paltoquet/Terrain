@@ -130,7 +130,7 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 	}
 
 	// Initialize the zone object.
-	result = m_World->Initialize(m_Direct3D, hwnd, screenWidth, screenHeight, SCREEN_DEPTH);
+	result = m_World->Initialize(m_Direct3D, hwnd, m_ShaderManager, screenWidth, screenHeight, SCREEN_DEPTH);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the zone object.", L"Error", MB_OK);

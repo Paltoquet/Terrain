@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <d3dclass.h>
 #include <Controls/Input.h>
 #include <ShaderCode/ShaderManager.h>
@@ -8,7 +9,7 @@
 #include <Profilling/FpsCounter.h>
 #include <Profilling/Timer.h>
 
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;

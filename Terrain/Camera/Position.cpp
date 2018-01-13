@@ -314,6 +314,11 @@ void Position::LookUpward(bool keydown)
 	return;
 }
 
+void Position::SetMouseMove(int mouseX, int mouseY)
+{
+	m_rotationX += float(mouseY)/2.0f;
+	m_rotationY += float(mouseX)/2.0f;
+}
 
 void Position::LookDownward(bool keydown)
 {

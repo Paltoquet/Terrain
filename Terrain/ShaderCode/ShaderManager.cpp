@@ -4,6 +4,7 @@
 
 ShaderManager::ShaderManager()
 {
+	m_EffectFactory = 0;
 	m_ColorShader = 0;
 	m_TextureShader = 0;
 	m_LightShader = 0;
@@ -21,6 +22,13 @@ ShaderManager::ShaderManager(const ShaderManager& other)
 bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
+
+
+	m_EffectFactory = new EffectFactory(device);
+	if (!m_EffectFactory)
+	{
+		return false;
+	}
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShader();
@@ -229,6 +237,14 @@ bool ShaderManager::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int 
 
 void ShaderManager::Shutdown()
 {
+
+	// Release the effect factory.
+	if (m_EffectFactory)
+	{
+		delete m_EffectFactory;
+		m_EffectFactory = 0;
+	}
+
 	// Release the bump map shader object.
 	if (m_ClipPlaneShader)
 	{

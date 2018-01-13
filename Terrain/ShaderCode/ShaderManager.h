@@ -1,6 +1,7 @@
 #pragma once
 
 #include "d3dclass.h"
+#include "Effects.h"
 #include "textureShader.h"
 #include "lightshader.h"
 #include "clipPlaneShader.h"
@@ -34,6 +35,10 @@ public:
 	bool RenderFontShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, XMFLOAT4 color);
 
 	bool RenderSkyDomeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT4, XMFLOAT4);
+
+
+public: 
+	EffectFactory* m_EffectFactory;
 
 private:
 	ColorShader* m_ColorShader;

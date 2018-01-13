@@ -11,6 +11,7 @@
 #include <Scene/Drawable/Land.h>
 #include <Scene/Drawable/Skydome.h>
 #include <Scene/Light.h>
+#include <Scene\Drawable\Mesh.h>
 
 class World
 {
@@ -19,7 +20,7 @@ public:
 	World(const World&);
 	~World();
 
-	bool Initialize(D3DClass*, HWND, int, int, float);
+	bool Initialize(D3DClass*, HWND, ShaderManager*, int, int, float);
 	void Shutdown();
 	bool Frame(D3DClass*, Input*, ShaderManager*, TextureManager*, float, int);
 
@@ -30,6 +31,7 @@ private:
 private:
 	UserInterface* m_UserInterface;
 	Camera* m_Camera;
+	Mesh* m_Test;
 	Position* m_Position;
 	Land* m_Terrain;
 	SkyDome* m_SkyDome;

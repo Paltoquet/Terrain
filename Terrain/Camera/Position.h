@@ -18,6 +18,7 @@ public:
 	void GetRotation(float&, float&, float&);
 
 	void SetFrameTime(float);
+	void SetMouseMove(int mouseX, int mouseY);
 
 	void MoveForward(bool);
 	void MoveBackward(bool);
