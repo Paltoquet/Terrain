@@ -6,6 +6,8 @@
 #include <d3d11.h>
 #include <directxmath.h>
 
+#include <Scene/Drawable/TerrainCell.h>
+
 using namespace DirectX;
 using namespace std;
 
@@ -59,9 +61,14 @@ public:
 
 	bool Initialize(ID3D11Device*, char* configFile);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*);
 
-	int GetIndexCount();
+	bool Render(ID3D11DeviceContext* deviceContext);
+	bool RenderCell(ID3D11DeviceContext*, int);
+	void RenderCellLines(ID3D11DeviceContext*, int);
+
+	int GetCellIndexCount(int);
+	int GetCellLinesIndexCount(int);
+	int GetCellCount();
 
 private:
 	bool InitializeBuffers(ID3D11Device*);
@@ -79,13 +86,14 @@ private:
 	bool BuildTerrainModel();
 
 	void RenderBuffers(ID3D11DeviceContext*);
+	bool LoadTerrainCells(ID3D11Device*);
 
+	void ShutdownTerrainCells();
 	void ShutdownTerrainModel();
-	void ShutdownBuffers();
 
 private:
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	int m_vertexCount, m_indexCount;
+	//ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+	int m_vertexCount;// , m_indexCount;
 
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;
@@ -93,4 +101,6 @@ private:
 	HeightMapType* m_heightMap;
 	ModelType* m_terrainModel;
 
+	TerrainCell* m_TerrainCells;
+	int m_cellCount;
 };

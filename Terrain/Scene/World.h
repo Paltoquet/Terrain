@@ -36,5 +36,5 @@ private:
 	Land* m_Terrain;
 	SkyDome* m_SkyDome;
 	Light* m_Light;
-	bool m_displayUI, m_wireFrame;
+	bool m_displayUI, m_wireFrame, m_cellLines;
 };

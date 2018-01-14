@@ -150,6 +150,9 @@
     <ClInclude Include="Scene\Drawable\Mesh.h">
       <Filter>Scene\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Drawable\TerrainCell.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -243,6 +246,9 @@
       <Filter>Scene\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Drawable\Mesh.cpp">
+      <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Drawable\TerrainCell.cpp">
       <Filter>Scene\Drawable</Filter>
     </ClCompile>
   </ItemGroup>

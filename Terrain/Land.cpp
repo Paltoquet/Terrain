@@ -3,12 +3,11 @@
 
 Land::Land()
 {
-	m_vertexBuffer = 0;
-	m_indexBuffer = 0;
 	m_terrainFilename = 0;
 	m_colorMapFilename = 0;
 	m_heightMap = 0;
 	m_terrainModel = 0;
+	m_TerrainCells = 0;
 }
 
 
@@ -834,101 +833,51 @@ bool Land::Render(ID3D11DeviceContext* deviceContext)
 
 bool Land::InitializeBuffers(ID3D11Device* device)
 {
-	VertexType* vertices;
-	unsigned long* indices;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-	HRESULT result;
-	int i;
-	XMFLOAT4 color;
+	return LoadTerrainCells(device);
+}
 
-	// Set the color of the terrain grid.
-	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+bool Land::LoadTerrainCells(ID3D11Device* device)
+{
+	int cellHeight, cellWidth, cellRowCount, i, j, index;
+	bool result;
 
-	// Calculate the number of vertices in the terrain.
-	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 6;
 
-	// Set the index count to the same as the vertex count.
-	m_indexCount = m_vertexCount;
+	// Set the height and width of each terrain cell to a fixed 33x33 vertex array.
+	cellHeight = 33;
+	cellWidth = 33;
 
-	// Create the vertex array.
-	vertices = new VertexType[m_vertexCount];
-	if (!vertices)
+	// Calculate the number of cells needed to store the terrain data.
+	cellRowCount = (m_terrainWidth - 1) / (cellWidth - 1);
+	m_cellCount = cellRowCount * cellRowCount;
+
+	// Create the terrain cell array.
+	m_TerrainCells = new TerrainCell[m_cellCount];
+	if (!m_TerrainCells)
 	{
 		return false;
 	}
 
-	// Create the index array.
-	indices = new unsigned long[m_indexCount];
-	if (!indices)
+	// Loop through and initialize all the terrain cells.
+	for (j = 0; j<cellRowCount; j++)
 	{
-		return false;
+		for (i = 0; i<cellRowCount; i++)
+		{
+			index = (cellRowCount * j) + i;
+
+			result = m_TerrainCells[index].Initialize(device, m_terrainModel, i, j, cellHeight, cellWidth, m_terrainWidth);
+			if (!result)
+			{
+				return false;
+			}
+		}
 	}
-
-	// Load the vertex array and index array with 3D terrain model data.
-	for (i = 0; i<m_vertexCount; i++)
-	{
-		vertices[i].position = XMFLOAT3(m_terrainModel[i].x, m_terrainModel[i].y, m_terrainModel[i].z);
-		vertices[i].texture = XMFLOAT2(m_terrainModel[i].tu, m_terrainModel[i].tv);
-		vertices[i].normal = XMFLOAT3(m_terrainModel[i].nx, m_terrainModel[i].ny, m_terrainModel[i].nz);
-		vertices[i].tangent = XMFLOAT3(m_terrainModel[i].tx, m_terrainModel[i].ty, m_terrainModel[i].tz);
-		vertices[i].binormal = XMFLOAT3(m_terrainModel[i].bx, m_terrainModel[i].by, m_terrainModel[i].bz);
-		vertices[i].color = XMFLOAT3(m_terrainModel[i].r, m_terrainModel[i].g, m_terrainModel[i].b);
-		indices[i] = i;
-	}
-
-	// Set up the description of the static vertex buffer.
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-
-	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = vertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
-
-	// Now create the vertex buffer.
-	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Set up the description of the static index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-
-	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	// Create the index buffer.
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Release the arrays now that the buffers have been created and loaded.
-	delete[] vertices;
-	vertices = 0;
-
-	delete[] indices;
-	indices = 0;
 
 	return true;
 }
 
 void Land::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
+	/*
 	unsigned int stride;
 	unsigned int offset;
 
@@ -948,26 +897,50 @@ void Land::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	*/
 
 	return;
 }
 
-
-int Land::GetIndexCount()
+bool Land::RenderCell(ID3D11DeviceContext* deviceContext, int cellId)
 {
-	return m_indexCount;
+	m_TerrainCells[cellId].Render(deviceContext);
+	return true;
+}
+
+void Land::RenderCellLines(ID3D11DeviceContext* deviceContext, int cellId)
+{
+	m_TerrainCells[cellId].RenderLineBuffers(deviceContext);
+	return;
+}
+
+
+int Land::GetCellIndexCount(int cellId)
+{
+	return m_TerrainCells[cellId].GetIndexCount();
+}
+
+int Land::GetCellLinesIndexCount(int cellId)
+{
+	return m_TerrainCells[cellId].GetLineBuffersIndexCount();
+}
+
+int Land::GetCellCount()
+{
+	return m_cellCount;
 }
 
 void Land::Shutdown()
 {
-	// Release the rendering buffers.
-	ShutdownBuffers();
+	// Release the terrain cells.
+	ShutdownTerrainCells();
 
 	// Release the terrain model.
 	ShutdownTerrainModel();
 
 	// Release the height map.
 	ShutdownHeightMap();
+
 	return;
 }
 
@@ -995,20 +968,21 @@ void Land::ShutdownTerrainModel()
 	return;
 }
 
-void Land::ShutdownBuffers()
+void Land::ShutdownTerrainCells()
 {
-	// Release the index buffer.
-	if (m_indexBuffer)
-	{
-		m_indexBuffer->Release();
-		m_indexBuffer = 0;
-	}
+	int i;
 
-	// Release the vertex buffer.
-	if (m_vertexBuffer)
+
+	// Release the terrain cell array.
+	if (m_TerrainCells)
 	{
-		m_vertexBuffer->Release();
-		m_vertexBuffer = 0;
+		for (i = 0; i<m_cellCount; i++)
+		{
+			m_TerrainCells[i].Shutdown();
+		}
+
+		delete[] m_TerrainCells;
+		m_TerrainCells = 0;
 	}
 
 	return;

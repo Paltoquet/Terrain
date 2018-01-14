@@ -162,6 +162,7 @@
     <ClInclude Include="Scene\Drawable\Land.h" />
     <ClInclude Include="Scene\Drawable\Mesh.h" />
     <ClInclude Include="Scene\Drawable\SkyDome.h" />
+    <ClInclude Include="Scene\Drawable\TerrainCell.h" />
     <ClInclude Include="Scene\Light.h" />
     <ClInclude Include="Scene\World.h" />
     <ClInclude Include="ShaderCode\ClipPlaneShader.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="Scene\Drawable\IModel.cpp" />
     <ClCompile Include="Scene\Drawable\Mesh.cpp" />
     <ClCompile Include="Scene\Drawable\SkyDome.cpp" />
+    <ClCompile Include="Scene\Drawable\TerrainCell.cpp" />
     <ClCompile Include="Scene\Light.cpp" />
     <ClCompile Include="Scene\World.cpp" />
     <ClCompile Include="ShaderCode\ClipPlaneShader.cpp" />

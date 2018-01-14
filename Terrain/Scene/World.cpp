@@ -120,6 +120,9 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, ShaderManager* ShaderManag
 	// Set wire frame rendering initially to enabled.
 	m_wireFrame = false;
 
+	// Set the rendering of cell lines initially to enabled.
+	m_cellLines = true;
+
 	return true;
 }
 
@@ -210,6 +213,12 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 		m_wireFrame = !m_wireFrame;
 	}
 
+	// Determine if we should render the lines around each terrain cell.
+	if (Input->IsF3Toggled())
+	{
+		m_cellLines = !m_cellLines;
+	}
+
 	return;
 }
 
@@ -271,24 +280,44 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	// Render the terrain grid using the color shader.
 	m_Terrain->Render(Direct3D->GetDeviceContext());
 
-	/*result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix);*/
+	// Render the terrain cells (and cell lines if needed).
+	for (int i = 0; i<m_Terrain->GetCellCount(); i++)
+	{
+		// Put the terrain cell buffers on the pipeline.
+		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i);
+		if (!result)
+		{
+			return false;
 
-	/*result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, TextureManager->GetTexture(1));*/
+		}
 
-	/*result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, TextureManager->GetTexture(1), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light->GetSpecularColor(), 0.0f);*/
+		// Render the cell buffers using the terrain shader.
+		result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+			projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+			m_Light->GetDirection(), m_Light->GetDiffuseColor());
 
-	result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
+		if (!result)
+		{
+			return false;
+		}
+
+		// If needed then render the bounding box around this terrain cell using the color shader. 
+		if (m_cellLines)
+		{
+			m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
+			ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix, viewMatrix, projectionMatrix);
+			if (!result)
+			{
+				return false;
+			}
+		}
+	}
+
+	/*result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
 		projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
 		m_Light->GetDirection(), m_Light->GetDiffuseColor());
-
+		*/
 	m_Test->Render(Direct3D->GetDeviceContext(), renderModel);
-
-	/*result = ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Test->GetIndexCount(), scale * translation2 * worldMatrix, viewMatrix,
-		projectionMatrix);*/
 
 	if (!result)
 	{
