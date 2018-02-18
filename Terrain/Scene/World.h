@@ -12,6 +12,7 @@
 #include <Scene/Drawable/Skydome.h>
 #include <Scene/Light.h>
 #include <Scene\Drawable\Mesh.h>
+#include <Method\Frustrum.h>
 
 class World
 {
@@ -36,5 +37,6 @@ private:
 	Land* m_Terrain;
 	SkyDome* m_SkyDome;
 	Light* m_Light;
-	bool m_displayUI, m_wireFrame, m_cellLines;
+	Frustum* m_Frustum;
+	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;;
 };

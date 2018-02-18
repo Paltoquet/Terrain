@@ -22,6 +22,7 @@ public:
 
 	bool Frame(ID3D11DeviceContext*, int, float, float, float, float, float, float);
 	bool Render(D3DClass* Direct3D, ShaderManager* ShaderManager, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix, const XMMATRIX& orthoMatrix);
+	bool UpdateRenderCounts(ID3D11DeviceContext*, int, int, int);
 
 private:
 	bool UpdateFpsString(ID3D11DeviceContext*, int);
@@ -30,6 +31,7 @@ private:
 	//TODO pass font pointer to Text
 	Font* m_Font1;
 	Text *m_FpsString;
+	Text* m_RenderCountStrings;
 	int m_previousFps;
 };
 

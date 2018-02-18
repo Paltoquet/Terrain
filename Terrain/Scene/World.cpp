@@ -11,6 +11,7 @@ World::World()
 	m_Terrain = 0;
 	m_SkyDome = 0;
 	m_Light = 0;
+	m_Frustum = 0;
 }
 
 
@@ -108,6 +109,16 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, ShaderManager* ShaderManag
 		return false;
 	}
 
+	// Create the frustum object.
+	m_Frustum = new Frustum();
+	if (!m_Frustum)
+	{
+		return false;
+	}
+
+	// Initialize the frustum object.
+	m_Frustum->Initialize(screenDepth);
+
 	// Initialize the light object.
 	//m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDiffuseColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -123,13 +134,17 @@ bool World::Initialize(D3DClass* Direct3D, HWND hwnd, ShaderManager* ShaderManag
 	// Set the rendering of cell lines initially to enabled.
 	m_cellLines = true;
 
+	// Set the user locked to the terrain height for movement.
+	m_heightLocked = true;
+
 	return true;
 }
 
 bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager, TextureManager* TextureManager, float frameTime, int fps)
 {
-	bool result;
-	float posX, posY, posZ, rotX, rotY, rotZ;
+	bool result, foundHeight;
+	float posX, posY, posZ, rotX, rotY, rotZ, height;
+
 
 
 	// Do the frame input processing.
@@ -144,6 +159,22 @@ bool World::Frame(D3DClass* Direct3D, Input* Input, ShaderManager* ShaderManager
 	if (!result)
 	{
 		return false;
+	}
+
+	// Do the terrain frame processing.
+	m_Terrain->Frame();
+
+	// If the height is locked to the terrain then position the camera on top of it.
+	if (m_heightLocked)
+	{
+		// Get the height of the triangle that is directly underneath the given camera position.
+		foundHeight = m_Terrain->GetHeightAtPosition(posX, posZ, height);
+		if (foundHeight)
+		{
+			// If there was a triangle under the camera then position the camera just above it by one meter.
+			m_Position->SetPosition(posX, height + 3.5f, posZ);
+			m_Camera->SetPosition(posX, height + 3.5f, posZ);
+		}
 	}
 
 	// Render the graphics.
@@ -219,6 +250,12 @@ void World::HandleMovementInput(Input* Input, float frameTime)
 		m_cellLines = !m_cellLines;
 	}
 
+	// Determine if we should be locked to the terrain height when we move around or not.
+	if (Input->IsF4Toggled())
+	{
+		m_heightLocked = !m_heightLocked;
+	}
+
 	return;
 }
 
@@ -246,6 +283,9 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	Direct3D->GetOrthoMatrix(orthoMatrix);
 
 	position = m_Camera->GetPosition();
+
+	// Construct the frustum.
+	m_Frustum->ConstructFrustum(projectionMatrix, viewMatrix);
 
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -284,31 +324,25 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	for (int i = 0; i<m_Terrain->GetCellCount(); i++)
 	{
 		// Put the terrain cell buffers on the pipeline.
-		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i);
-		if (!result)
+		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
+
+		if (result)
 		{
-			return false;
-
-		}
-
-		// Render the cell buffers using the terrain shader.
-		result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
-			projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
-			m_Light->GetDirection(), m_Light->GetDiffuseColor());
-
-		if (!result)
-		{
-			return false;
-		}
-
-		// If needed then render the bounding box around this terrain cell using the color shader. 
-		if (m_cellLines)
-		{
-			m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
-			ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix, viewMatrix, projectionMatrix);
+			// Render the cell buffers using the terrain shader.
+			result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+				m_Light->GetDirection(), m_Light->GetDiffuseColor());
 			if (!result)
 			{
 				return false;
+			}
+
+			// If needed then render the bounding box around this terrain cell using the color shader. 
+			if (m_cellLines)
+			{
+				m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
+				ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
+					viewMatrix, projectionMatrix);
 			}
 		}
 	}
@@ -318,11 +352,6 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 		m_Light->GetDirection(), m_Light->GetDiffuseColor());
 		*/
 	m_Test->Render(Direct3D->GetDeviceContext(), renderModel);
-
-	if (!result)
-	{
-		return false;
-	}
 	
 
 	// Turn off wire frame rendering of the terrain if it was on.
@@ -334,6 +363,10 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 	// Render the user interface.
 	if (m_displayUI)
 	{
+		// Update the render counts in the UI.
+		result = m_UserInterface->UpdateRenderCounts(Direct3D->GetDeviceContext(), m_Terrain->GetRenderCount(), m_Terrain->GetCellsDrawn(),
+			m_Terrain->GetCellsCulled());
+
 		result = m_UserInterface->Render(Direct3D, ShaderManager, worldMatrix, baseViewMatrix, orthoMatrix);
 		if (!result)
 		{
@@ -392,6 +425,13 @@ void World::Shutdown()
 		m_UserInterface->Shutdown();
 		delete m_UserInterface;
 		m_UserInterface = 0;
+	}
+
+	// Release the frustum object.
+	if (m_Frustum)
+	{
+		delete m_Frustum;
+		m_Frustum = 0;
 	}
 
 	return;

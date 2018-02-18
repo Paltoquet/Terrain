@@ -155,6 +155,7 @@
     <ClInclude Include="D3dClass.h" />
     <ClInclude Include="ImageProcessing\Texture.h" />
     <ClInclude Include="ImageProcessing\TextureManager.h" />
+    <ClInclude Include="Method\Frustrum.h" />
     <ClInclude Include="Profilling\FpsCounter.h" />
     <ClInclude Include="Profilling\Timer.h" />
     <ClInclude Include="Resource.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="ImageProcessing\Texture.cpp" />
     <ClCompile Include="ImageProcessing\TextureManager.cpp" />
     <ClCompile Include="Land.cpp" />
+    <ClCompile Include="Method\Frustrum.cpp" />
     <ClCompile Include="Profilling\FpsCounter.cpp" />
     <ClCompile Include="Profilling\Timer.cpp" />
     <ClCompile Include="Scene\Drawable\IModel.cpp" />

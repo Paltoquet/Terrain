@@ -6,6 +6,7 @@ UserInterface::UserInterface()
 {
 	m_Font1 = 0;
 	m_FpsString = 0;
+	m_RenderCountStrings = 0;
 }
 
 
@@ -63,6 +64,7 @@ bool UserInterface::Initialize(D3DClass* Direct3D, int screenHeight, int screenW
 	// Initial the previous frame fps.
 	m_previousFps = -1;
 
+
 	// Setup the video card strings.
 	Direct3D->GetVideoCardInfo(videoCard, videoMemory);
 	strcpy_s(videoString, "Video Card: ");
@@ -74,12 +76,53 @@ bool UserInterface::Initialize(D3DClass* Direct3D, int screenHeight, int screenW
 	strcat_s(memoryString, tempString);
 	strcat_s(memoryString, " MB");
 
+	// Create the text objects for the render count strings.
+	m_RenderCountStrings = new Text[3];
+	if (!m_RenderCountStrings)
+	{
+		return false;
+	}
+
+	// Initialize the render count strings.
+	result = m_RenderCountStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_Font1,
+		"Polys Drawn: 0", 10, 30, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_RenderCountStrings[1].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_Font1,
+		"Cells Drawn: 0", 10, 50, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_RenderCountStrings[2].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_Font1,
+		"Cells Culled: 0", 10, 70, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 
 void UserInterface::Shutdown()
 {
+
+	// Release the render count strings.
+	if (m_RenderCountStrings)
+	{
+		m_RenderCountStrings[0].Shutdown();
+		m_RenderCountStrings[1].Shutdown();
+		m_RenderCountStrings[2].Shutdown();
+
+		delete[] m_RenderCountStrings;
+		m_RenderCountStrings = 0;
+	}
+
 	// Release the fps text string.
 	if(m_FpsString)
 	{
@@ -126,6 +169,12 @@ bool UserInterface::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, con
 
 	// Render the fps string.
 	m_FpsString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+
+	// Render the render count strings.
+	for (int i = 0; i<3; i++)
+	{
+		m_RenderCountStrings[i].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+	}
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->TurnOffAlphaBlending();
@@ -194,6 +243,58 @@ bool UserInterface::UpdateFpsString(ID3D11DeviceContext* deviceContext, int fps)
 	// Update the sentence vertex buffer with the new string information.
 	result = m_FpsString->UpdateSentence(deviceContext, m_Font1, finalString, 10, 50, red, green, blue);
 	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool UserInterface::UpdateRenderCounts(ID3D11DeviceContext* deviceContext, int renderCount, int nodesDrawn, int nodesCulled)
+{
+	char tempString[32];
+	char finalString[32];
+	bool result;
+
+
+	// Convert the render count integer to string format.
+	_itoa_s(renderCount, tempString, 10);
+
+	// Setup the render count string.
+	strcpy_s(finalString, "Polys Drawn: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_RenderCountStrings[0].UpdateSentence(deviceContext, m_Font1, finalString, 10, 260, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Convert the cells drawn integer to string format.
+	_itoa_s(nodesDrawn, tempString, 10);
+
+	// Setup the cells drawn string.
+	strcpy_s(finalString, "Cells Drawn: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_RenderCountStrings[1].UpdateSentence(deviceContext, m_Font1, finalString, 10, 280, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Convert the cells culled integer to string format.
+	_itoa_s(nodesCulled, tempString, 10);
+
+	// Setup the cells culled string.
+	strcpy_s(finalString, "Cells Culled: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_RenderCountStrings[2].UpdateSentence(deviceContext, m_Font1, finalString, 10, 300, 1.0f, 1.0f, 1.0f);
+	if (!result)
 	{
 		return false;
 	}

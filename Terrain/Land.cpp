@@ -831,6 +831,317 @@ bool Land::Render(ID3D11DeviceContext* deviceContext)
 	return true;
 }
 
+void Land::Frame()
+{
+	m_renderCount = 0;
+	m_cellsDrawn = 0;
+	m_cellsCulled = 0;
+	return;
+}
+
+bool Land::GetHeightAtPosition(float inputX, float inputZ, float& height)
+{
+	int i, cellId, index;
+	float vertex1[3], vertex2[3], vertex3[3];
+	bool foundHeight;
+	float maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth;
+
+
+	// Loop through all of the terrain cells to find out which one the inputX and inputZ would be inside.
+	cellId = -1;
+	for (i = 0; i<m_cellCount; i++)
+	{
+		// Get the current cell dimensions.
+		m_TerrainCells[i].GetCellDimensions(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+
+		// Check to see if the positions are in this cell.
+		if ((inputX < maxWidth) && (inputX > minWidth) && (inputZ < maxDepth) && (inputZ > minDepth))
+		{
+			cellId = i;
+			break;
+		}
+	}
+
+	// If we didn't find a cell then the input position is off the terrain grid.
+	if (cellId == -1)
+	{
+		return false;
+	}
+
+	// If this is the right cell then check all the triangles in this cell to see what the height of the triangle at this position is.
+	for (i = 0; i<(m_TerrainCells[cellId].GetVertexCount() / 3); i++)
+	{
+		index = i * 3;
+
+		vertex1[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex1[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex1[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+		index++;
+
+		vertex2[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex2[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex2[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+		index++;
+
+		vertex3[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex3[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex3[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+
+		// Check to see if this is the polygon we are looking for.
+		foundHeight = CheckHeightOfTriangle(inputX, inputZ, height, vertex1, vertex2, vertex3);
+		if (foundHeight)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Land::CheckHeightOfTriangle(float x, float z, float& height, float v0[3], float v1[3], float v2[3])
+{
+	//float directionVector[3], edge1[3], edge2[3], normal[3];
+	//float Q[3], e1[3], e2[3], e3[3], edgeNormal[3], temp[3];
+	//float magnitude, D, denominator, numerator, t, determinant;
+
+	XMFLOAT3 tmp;
+	XMFLOAT3 vert0, vert1, vert2;
+	XMFLOAT3 startVector;
+	XMFLOAT3 lo, v0v1, v0v2, v1v2, v2v0, rayDir, faceNormal, faceTangent;
+	XMFLOAT3 P;
+	XMVECTOR tmp1, tmp2, tangent, res;
+	float numerator, denominator, distance;
+	float t;
+
+
+	// Starting position of the ray that is being cast.
+	//startVector[0] = x;
+	//startVector[1] = 0.0f;
+	//startVector[2] = z;
+
+	vert0 = XMFLOAT3(v0[0], v0[1], v0[2]);
+	vert1 = XMFLOAT3(v1[0], v1[1], v1[2]);
+	vert2 = XMFLOAT3(v2[0], v2[1], v2[2]);
+	lo = XMFLOAT3(x, 0.0f, z);
+	rayDir = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	
+	tmp1 = XMLoadFloat3(&vert0);
+	tmp2 = XMLoadFloat3(&vert1);
+	res = XMVectorSubtract(tmp2, tmp1);
+	XMStoreFloat3(&v0v1, res);
+
+	tmp2 = XMLoadFloat3(&vert2);
+	res = XMVectorSubtract(tmp2, tmp1);
+	XMStoreFloat3(&v0v2, res);
+	res = XMVectorScale(res, -1.0f),
+	XMStoreFloat3(&v2v0, res);
+
+	tmp1 = XMLoadFloat3(&vert1);
+	res = XMVectorSubtract(tmp2, tmp1);
+	XMStoreFloat3(&v1v2, res);
+
+	tmp1 = XMLoadFloat3(&v0v1);
+	tmp2 = XMLoadFloat3(&v0v2);
+	res = XMVector3Cross(tmp1, tmp2);
+	res = XMVector3Normalize(res);
+	XMStoreFloat3(&faceNormal, res);
+
+	tmp1 = XMLoadFloat3(&rayDir);
+	tmp1 = XMVector3Dot(tmp1, res);
+	XMStoreFloat3(&tmp, tmp1);
+	denominator = tmp.x;
+
+	tmp1 = XMLoadFloat3(&vert0);
+	res = XMVectorScale(res, -1.0f);
+	tmp2 = XMVector3Dot(tmp1, res);
+	XMStoreFloat3(&tmp, tmp2);
+	numerator = tmp.x;
+
+	tmp1 = XMLoadFloat3(&lo);
+	tmp2 = XMLoadFloat3(&faceNormal);
+	tmp1 = XMVector3Dot(tmp1, tmp2);
+	XMStoreFloat3(&tmp, tmp1);
+	numerator = -1.0f * (numerator + tmp.x);
+
+	t = numerator / denominator;
+
+	P = XMFLOAT3(lo.x + rayDir.x * t, lo.y + rayDir.y * t, lo.z + rayDir.z * t);
+
+
+	//check edge vov1
+	tmp1 = XMLoadFloat3(&v0v1);
+	tmp2 = XMLoadFloat3(&faceNormal);
+	tangent = XMVector3Cross(tmp1, tmp2);
+
+	tmp1 = XMLoadFloat3(&P);
+	tmp2 = XMLoadFloat3(&vert0);
+	res  = XMVectorSubtract(tmp1, tmp2);
+	res = XMVector3Dot(tangent, res);
+	XMStoreFloat3(&tmp, res);
+	distance = tmp.x;
+
+	if (distance > 0.001f) {
+		return false;
+	}
+
+	//check edge v1v2
+	tmp1 = XMLoadFloat3(&v1v2);
+	tmp2 = XMLoadFloat3(&faceNormal);
+	tangent = XMVector3Cross(tmp1, tmp2);
+
+	tmp1 = XMLoadFloat3(&P);
+	tmp2 = XMLoadFloat3(&vert1);
+	res = XMVectorSubtract(tmp1, tmp2);
+	res = XMVector3Dot(tangent, res);
+	XMStoreFloat3(&tmp, res);
+	distance = tmp.x;
+
+	if (distance > 0.001f) {
+		return false;
+	}
+
+	//check v2v0
+	tmp1 = XMLoadFloat3(&v2v0);
+	tmp2 = XMLoadFloat3(&faceNormal);
+	tangent = XMVector3Cross(tmp1, tmp2);
+
+	tmp1 = XMLoadFloat3(&P);
+	tmp2 = XMLoadFloat3(&vert2);
+	res = XMVectorSubtract(tmp1, tmp2);
+	res = XMVector3Dot(tangent, res);
+	XMStoreFloat3(&tmp, res);
+	distance = tmp.x;
+
+	if (distance > 0.001f) {
+		return false;
+	}
+
+	height = P.y;
+
+	return true;
+
+	/*
+	// The direction the ray is being cast.
+	directionVector[0] = 0.0f;
+	directionVector[1] = -1.0f;
+	directionVector[2] = 0.0f;
+
+	// Calculate the two edges from the three points given.
+	edge1[0] = v1[0] - v0[0];
+	edge1[1] = v1[1] - v0[1];
+	edge1[2] = v1[2] - v0[2];
+
+	edge2[0] = v2[0] - v0[0];
+	edge2[1] = v2[1] - v0[1];
+	edge2[2] = v2[2] - v0[2];
+
+	// Calculate the normal of the triangle from the two edges.
+	normal[0] = (edge1[1] * edge2[2]) - (edge1[2] * edge2[1]);
+	normal[1] = (edge1[2] * edge2[0]) - (edge1[0] * edge2[2]);
+	normal[2] = (edge1[0] * edge2[1]) - (edge1[1] * edge2[0]);
+
+	magnitude = (float)sqrt((normal[0] * normal[0]) + (normal[1] * normal[1]) + (normal[2] * normal[2]));
+	normal[0] = normal[0] / magnitude;
+	normal[1] = normal[1] / magnitude;
+	normal[2] = normal[2] / magnitude;
+
+	// Find the distance from the origin to the plane.
+	D = ((-normal[0] * v0[0]) + (-normal[1] * v0[1]) + (-normal[2] * v0[2]));
+
+	// Get the denominator of the equation.
+	denominator = ((normal[0] * directionVector[0]) + (normal[1] * directionVector[1]) + (normal[2] * directionVector[2]));
+
+	// Make sure the result doesn't get too close to zero to prevent divide by zero.
+	if (fabs(denominator) < 0.0001f)
+	{
+		return false;
+	}
+
+	// Get the numerator of the equation.
+	numerator = -1.0f * (((normal[0] * startVector[0]) + (normal[1] * startVector[1]) + (normal[2] * startVector[2])) + D);
+
+	// Calculate where we intersect the triangle.
+	t = numerator / denominator;
+
+	// Find the intersection vector.
+	Q[0] = startVector[0] + (directionVector[0] * t);
+	Q[1] = startVector[1] + (directionVector[1] * t);
+	Q[2] = startVector[2] + (directionVector[2] * t);
+
+	// Find the three edges of the triangle.
+	e1[0] = v1[0] - v0[0];
+	e1[1] = v1[1] - v0[1];
+	e1[2] = v1[2] - v0[2];
+
+	e2[0] = v2[0] - v1[0];
+	e2[1] = v2[1] - v1[1];
+	e2[2] = v2[2] - v1[2];
+
+	e3[0] = v0[0] - v2[0];
+	e3[1] = v0[1] - v2[1];
+	e3[2] = v0[2] - v2[2];
+
+	// Calculate the normal for the first edge.
+	edgeNormal[0] = (e1[1] * normal[2]) - (e1[2] * normal[1]);
+	edgeNormal[1] = (e1[2] * normal[0]) - (e1[0] * normal[2]);
+	edgeNormal[2] = (e1[0] * normal[1]) - (e1[1] * normal[0]);
+
+	// Calculate the determinant to see if it is on the inside, outside, or directly on the edge.
+	temp[0] = Q[0] - v0[0];
+	temp[1] = Q[1] - v0[1];
+	temp[2] = Q[2] - v0[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// Check if it is outside.
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	// Calculate the normal for the second edge.
+	edgeNormal[0] = (e2[1] * normal[2]) - (e2[2] * normal[1]);
+	edgeNormal[1] = (e2[2] * normal[0]) - (e2[0] * normal[2]);
+	edgeNormal[2] = (e2[0] * normal[1]) - (e2[1] * normal[0]);
+
+	// Calculate the determinant to see if it is on the inside, outside, or directly on the edge.
+	temp[0] = Q[0] - v1[0];
+	temp[1] = Q[1] - v1[1];
+	temp[2] = Q[2] - v1[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// Check if it is outside.
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	// Calculate the normal for the third edge.
+	edgeNormal[0] = (e3[1] * normal[2]) - (e3[2] * normal[1]);
+	edgeNormal[1] = (e3[2] * normal[0]) - (e3[0] * normal[2]);
+	edgeNormal[2] = (e3[0] * normal[1]) - (e3[1] * normal[0]);
+
+	// Calculate the determinant to see if it is on the inside, outside, or directly on the edge.
+	temp[0] = Q[0] - v2[0];
+	temp[1] = Q[1] - v2[1];
+	temp[2] = Q[2] - v2[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// Check if it is outside.
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	// Now we have our height.
+	height = Q[1];
+
+	return true;
+	*/
+}
+
 bool Land::InitializeBuffers(ID3D11Device* device)
 {
 	return LoadTerrainCells(device);
@@ -902,11 +1213,37 @@ void Land::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool Land::RenderCell(ID3D11DeviceContext* deviceContext, int cellId)
+bool Land::RenderCell(ID3D11DeviceContext* deviceContext, int cellId, Frustum* Frustum)
 {
+	float maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth;
+	bool result;
+
+
+	// Get the dimensions of the terrain cell.
+	m_TerrainCells[cellId].GetCellDimensions(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+
+	// Check if the cell is visible.  If it is not visible then just return and don't render it.
+	result = Frustum->CheckRectangle(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+	if (!result)
+	{
+		// Increment the number of cells that were culled.
+		m_cellsCulled++;
+
+		return false;
+	}
+
+	// If it is visible then render it.
 	m_TerrainCells[cellId].Render(deviceContext);
+
+	// Add the polygons in the cell to the render count.
+	m_renderCount += (m_TerrainCells[cellId].GetVertexCount() / 3);
+
+	// Increment the number of cells that were actually drawn.
+	m_cellsDrawn++;
+
 	return true;
 }
+
 
 void Land::RenderCellLines(ID3D11DeviceContext* deviceContext, int cellId)
 {
@@ -929,6 +1266,24 @@ int Land::GetCellCount()
 {
 	return m_cellCount;
 }
+
+int Land::GetRenderCount()
+{
+	return m_renderCount;
+}
+
+
+int Land::GetCellsDrawn()
+{
+	return m_cellsDrawn;
+}
+
+
+int Land::GetCellsCulled()
+{
+	return m_cellsCulled;
+}
+
 
 void Land::Shutdown()
 {

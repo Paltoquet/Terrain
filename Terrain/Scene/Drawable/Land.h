@@ -7,6 +7,8 @@
 #include <directxmath.h>
 
 #include <Scene/Drawable/TerrainCell.h>
+#include <Method\Frustrum.h>
+
 
 using namespace DirectX;
 using namespace std;
@@ -63,12 +65,19 @@ public:
 	void Shutdown();
 
 	bool Render(ID3D11DeviceContext* deviceContext);
-	bool RenderCell(ID3D11DeviceContext*, int);
+	bool RenderCell(ID3D11DeviceContext*, int, Frustum*);
 	void RenderCellLines(ID3D11DeviceContext*, int);
+
+	void Frame();
+	bool GetHeightAtPosition(float, float, float&);
 
 	int GetCellIndexCount(int);
 	int GetCellLinesIndexCount(int);
 	int GetCellCount();
+
+	int GetRenderCount();
+	int GetCellsDrawn();
+	int GetCellsCulled();
 
 private:
 	bool InitializeBuffers(ID3D11Device*);
@@ -84,6 +93,8 @@ private:
 	void CalculateTangentBinormal(TempVertexType, TempVertexType, TempVertexType, XMFLOAT3&, XMFLOAT3&);
 	bool CalculateNormals();
 	bool BuildTerrainModel();
+
+	bool CheckHeightOfTriangle(float, float, float&, float[3], float[3], float[3]);
 
 	void RenderBuffers(ID3D11DeviceContext*);
 	bool LoadTerrainCells(ID3D11Device*);
@@ -102,5 +113,5 @@ private:
 	ModelType* m_terrainModel;
 
 	TerrainCell* m_TerrainCells;
-	int m_cellCount;
+	int m_cellCount, m_renderCount, m_cellsDrawn, m_cellsCulled;
 };

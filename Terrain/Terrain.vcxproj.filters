@@ -46,6 +46,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{81790eef-01ec-40bf-93de-e1cc74aa6c05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Method">
+      <UniqueIdentifier>{70b0bab5-cb30-40eb-87e6-c10633a29ac2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -153,6 +156,9 @@
     <ClInclude Include="Scene\Drawable\TerrainCell.h">
       <Filter>Scene\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="Method\Frustrum.h">
+      <Filter>Method</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -250,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="Scene\Drawable\TerrainCell.cpp">
       <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Method\Frustrum.cpp">
+      <Filter>Method</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
