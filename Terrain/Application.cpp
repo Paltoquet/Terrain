@@ -97,6 +97,12 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 		return false;
 	}
 
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "Ressources/Texture/snow01n.tga", 2);
+	if (!result)
+	{
+		return false;
+	}
+
 	// Create the timer object.
 	m_Timer = new Timer();
 	if (!m_Timer)

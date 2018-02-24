@@ -330,7 +330,7 @@ bool World::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, TextureMana
 		{
 			// Render the cell buffers using the terrain shader.
 			result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
-				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1), TextureManager->GetTexture(2),
 				m_Light->GetDirection(), m_Light->GetDiffuseColor());
 			if (!result)
 			{
