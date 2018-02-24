@@ -29,3 +29,9 @@ bool StringHelper::endWith(const wchar_t* str, const wchar_t* ending)
 		return std::equal(end.rbegin(), end.rend(), tmp.rbegin());
 	}
 }
+
+bool StringHelper::ends_with(std::string const & value, std::string const & ending)
+{
+	if (ending.size() > value.size()) return false;
+	return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}

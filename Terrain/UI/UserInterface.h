@@ -3,6 +3,7 @@
 
 #include <D3dClass.h>
 #include <ShaderCode\ShaderManager.h>
+#include <Scene\Drawable\MiniMap.h>
 
 #include <UI\Text.h>
 
@@ -32,6 +33,7 @@ private:
 	Font* m_Font1;
 	Text *m_FpsString;
 	Text* m_RenderCountStrings;
+	MiniMap* m_MiniMap;
 	int m_previousFps;
 };
 

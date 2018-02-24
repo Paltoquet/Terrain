@@ -7,6 +7,7 @@ UserInterface::UserInterface()
 	m_Font1 = 0;
 	m_FpsString = 0;
 	m_RenderCountStrings = 0;
+	m_MiniMap = 0;
 }
 
 
@@ -105,43 +106,22 @@ bool UserInterface::Initialize(D3DClass* Direct3D, int screenHeight, int screenW
 		return false;
 	}
 
+	// Create the mini-map object.
+	m_MiniMap = new MiniMap();
+	if (!m_MiniMap)
+	{
+		return false;
+	}
+
+	// Initialize the mini-map object.
+	result = m_MiniMap->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 513, 513);
+	if (!m_MiniMap)
+	{
+		return false;
+	}
+
 	return true;
 }
-
-
-void UserInterface::Shutdown()
-{
-
-	// Release the render count strings.
-	if (m_RenderCountStrings)
-	{
-		m_RenderCountStrings[0].Shutdown();
-		m_RenderCountStrings[1].Shutdown();
-		m_RenderCountStrings[2].Shutdown();
-
-		delete[] m_RenderCountStrings;
-		m_RenderCountStrings = 0;
-	}
-
-	// Release the fps text string.
-	if(m_FpsString)
-	{
-		m_FpsString->Shutdown();
-		delete m_FpsString;
-		m_FpsString = 0;
-	}
-
-	// Release the font object.
-	if(m_Font1)
-	{
-		m_Font1->Shutdown();
-		delete m_Font1;
-		m_Font1 = 0;
-	}
-
-	return;
-}
-
 
 bool UserInterface::Frame(ID3D11DeviceContext* deviceContext, int fps, float posX, float posY, float posZ, 
 							   float rotX, float rotY, float rotZ)
@@ -155,6 +135,9 @@ bool UserInterface::Frame(ID3D11DeviceContext* deviceContext, int fps, float pos
 	{
 		return false;
 	}
+
+	// Update the mini-map position indicator.
+	m_MiniMap->PositionUpdate(posX, posZ);
 
 	return true;
 }
@@ -178,6 +161,9 @@ bool UserInterface::Render(D3DClass* Direct3D, ShaderManager* ShaderManager, con
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->TurnOffAlphaBlending();
+
+	// Render the mini-map.
+	m_MiniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
 
 	// Turn the Z buffer back on now that the 2D rendering has completed.
 	Direct3D->TurnZBufferOn();
@@ -300,4 +286,44 @@ bool UserInterface::UpdateRenderCounts(ID3D11DeviceContext* deviceContext, int r
 	}
 
 	return true;
+}
+
+void UserInterface::Shutdown()
+{
+
+	// Release the render count strings.
+	if (m_RenderCountStrings)
+	{
+		m_RenderCountStrings[0].Shutdown();
+		m_RenderCountStrings[1].Shutdown();
+		m_RenderCountStrings[2].Shutdown();
+
+		delete[] m_RenderCountStrings;
+		m_RenderCountStrings = 0;
+	}
+
+	// Release the fps text string.
+	if (m_FpsString)
+	{
+		m_FpsString->Shutdown();
+		delete m_FpsString;
+		m_FpsString = 0;
+	}
+
+	// Release the font object.
+	if (m_Font1)
+	{
+		m_Font1->Shutdown();
+		delete m_Font1;
+		m_Font1 = 0;
+	}
+
+	// Release the mini-map object.
+	if (m_MiniMap)
+	{
+		m_MiniMap->Shutdown();
+		delete m_MiniMap;
+		m_MiniMap = 0;
+	}
+	return;
 }
