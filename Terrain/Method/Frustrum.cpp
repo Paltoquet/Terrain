@@ -206,7 +206,26 @@ bool Frustum::CheckRectangle(float maxWidth, float maxHeight, float maxDepth, fl
 	rectangle[6] = XMFLOAT4(minWidth, maxHeight, maxDepth, 1.0f);
 	rectangle[7] = XMFLOAT4(maxWidth, maxHeight, maxDepth, 1.0f);
 
-	for (i = 0; i < 8; i++) {
+	bool isOutside = true;
+	int in;
+	for (k = 0; k < 6 && isOutside; k++) {
+		in = 0;
+		vplane = XMLoadFloat4(&m_plane[k]);
+		for (i = 0; i < 8; i++) {
+			vpoint = XMLoadFloat4(&rectangle[i]);
+			result = XMVector4Dot(vplane, vpoint);
+			XMStoreFloat4(&dotProduct, result);
+			if (dotProduct.x > 0) {
+				in++;
+			}
+		}
+		if (in == 0) {
+			return false;
+		}
+	}
+	return true;
+
+	/*for (i = 0; i < 8; i++) {
 		IsInside = true;
 		vpoint = XMLoadFloat4(&rectangle[i]);
 		for (k = 0; k < 6 && IsInside; k++) {
@@ -221,7 +240,6 @@ bool Frustum::CheckRectangle(float maxWidth, float maxHeight, float maxDepth, fl
 			break;
 		}
 	}
-
 	return IsInside;
 	// Check if any of the 6 planes of the rectangle are inside the view frustum.
 	/*for (i = 0; i<6; i++)
