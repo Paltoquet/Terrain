@@ -29,8 +29,6 @@ bool UserInterface::Initialize(D3DClass* Direct3D, int screenHeight, int screenW
 	char videoString[144];
 	char memoryString[32];
 	char tempString[16];
-	int i;
-
 
 	// Create the first font object.
 	m_Font1 = new Font();

@@ -16,6 +16,7 @@ private:
 		float tx, ty, tz;
 		float bx, by, bz;
 		float r, g, b;
+		float tu2, tv2;
 	};
 
 	struct VertexType
@@ -26,6 +27,7 @@ private:
 		XMFLOAT3 tangent;
 		XMFLOAT3 binormal;
 		XMFLOAT3 color;
+		XMFLOAT2 texture2;
 	};
 
 	struct VectorType

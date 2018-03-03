@@ -159,6 +159,15 @@
     <ClInclude Include="Method\Frustrum.h">
       <Filter>Method</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Drawable\MiniMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneGraph.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Drawable\Bitmap.h">
+      <Filter>Scene\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -259,6 +268,15 @@
     </ClCompile>
     <ClCompile Include="Method\Frustrum.cpp">
       <Filter>Method</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Drawable\MiniMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneGraph.cpp">
+      <Filter>Scene\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Drawable\Bitmap.cpp">
+      <Filter>Scene\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

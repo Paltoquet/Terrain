@@ -188,10 +188,10 @@ bool ShaderManager::RenderLightShader(ID3D11DeviceContext* deviceContext, int in
 
 
 bool ShaderManager::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap, ID3D11ShaderResourceView* normalMap2,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap, ID3D11ShaderResourceView* normalMap2, ID3D11ShaderResourceView* distanceNormalMap,
 	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
-	return m_LandShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, normalMap2, lightDirection, diffuseColor);
+	return m_LandShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, normalMap2, distanceNormalMap, lightDirection, diffuseColor);
 }
 
 
